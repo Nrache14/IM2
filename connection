@@ -1,0 +1,45 @@
+<?php
+
+class Connection {
+    private $server = "mysql:host=localhost;dbname=negro3b";
+    private $dbuser = "root";
+    private $dbpass = "";
+    private $options = array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+    );
+    protected $con;
+
+    public function openConnection() {
+        try {
+            $this->con = new PDO($this->server, $this->dbuser, $this->dbpass, $this->options);
+            return $this->con;
+        } catch (PDOException $err) {
+            echo "Database connection problem: " . $err->getMessage();
+            return null;
+        }
+    }
+
+    public function addStudent() {
+        if (isset($_POST['addstudent'])) {
+            $first_name = $_POST['first_name'];
+            $last_name = $_POST['last_name'];
+            $email = $_POST['email']; 
+            $gender = $_POST['gender'];
+            $birthdate = $_POST['birthdate'];
+            $address = $_POST['address'];
+
+            try {
+                $connection = $this->openConnection();
+                $query = "INSERT INTO student_table (`first_name`, `last_name`, `email`, `gender`, `birthdate`, `address`) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $connection->prepare($query);
+                $stmt->execute([$first_name, $last_name, $email, $gender, $birthdate, $address]);
+
+                $_SESSION['message'] = "Student added successfully"; // Set a success message
+            } catch (PDOException $th) {
+                echo "Error: " . $th->getMessage();
+            }
+        }
+    }
+}
