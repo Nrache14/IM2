@@ -22,24 +22,84 @@ class Connection {
 
     public function addStudent() {
         if (isset($_POST['addstudent'])) {
-            $first_name = $_POST['first_name'];
-            $last_name = $_POST['last_name'];
+
+            $first_name = $_POST['firstname'];
+            $last_name = $_POST['lastname'];
             $email = $_POST['email']; 
             $gender = $_POST['gender'];
-            $birthdate = $_POST['birthdate'];
+            $birthdate = $_POST['birth'];
             $address = $_POST['address'];
 
             try {
                 $connection = $this->openConnection();
-                $query = "INSERT INTO student_table (`first_name`, `last_name`, `email`, `gender`, `birthdate`, `address`) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+                $query = "INSERT INTO student_table (`first_name`, `last_name`, `email`, `gender`, 
+                `birthdate`, `address`) VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt = $connection->prepare($query);
-                $stmt->execute([$first_name, $last_name, $email, $gender, $birthdate, $address]);
-
-                $_SESSION['message'] = "Student added successfully"; // Set a success message
+                $stmt->execute([$first_name,$last_name,$email,$gender,$birthdate,$address]);
+                // $_SESSION['message'] = "Student added successfully"; // Set a success message
             } catch (PDOException $th) {
                 echo "Error: " . $th->getMessage();
             }
         }
     }
+
+    public function deleteStudent() {
+        if (isset($_POST['delete_student'])) {
+            $id = $_POST['delete_student'];
+            try {
+                $connection = $this->openConnection();
+                $query = "DELETE FROM student_table WHERE id = :id";
+                $stmt = $connection->prepare($query);
+                $query_execute = $stmt->execute(["id" => $id]);
+                if ($query_execute) {
+                    echo'<script>alert("Deleted)</script>';
+                }
+            } catch (PDOException $th) {
+                echo "Error: " . $th->getMessage();
+            }
+        }
+    }
+
+    public function updateStudent() {
+        if (isset($_POST['update_student'])) {
+            $id = $_POST['id'];
+            $first_name = $_POST['firstname'];
+            $last_name = $_POST['lastname'];
+            $email = $_POST['email'];
+            $gender = $_POST['gender'];
+            $birthdate = $_POST['birth'];
+            $address = $_POST['address'];
+    
+            try {
+                $connection = $this->openConnection();
+                $query = "UPDATE student_table SET first_name = ?, last_name = ?, email = ?, gender = ?, 
+                          birthdate = ?, address = ? WHERE id = ?";
+                $stmt = $connection->prepare($query);
+                $stmt->execute([$first_name, $last_name, $email, $gender, $birthdate, $address, $id]);
+    
+                $_SESSION['message'] = "Student updated successfully";
+                header("Location: index.php");
+                exit(0);
+            } catch (PDOException $th) {
+                echo "Error: " . $th->getMessage();
+            }
+        }
+    }
+    
+    
+
+    public function getStudentById($id) {
+        try {
+            $connection = $this->openConnection();
+            $query = "SELECT * FROM student_table WHERE id = ?";
+            $stmt = $connection->prepare($query);
+            $stmt->execute([$id]);
+            return $stmt->fetch(); // Returns a single student object
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage();
+            return null;
+        }
+    }
+    
+    
 }
