@@ -38,59 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="container">
     <form class="row g-3" action="" method="POST">
-        <div class="col-md-3">
-            <label for="product_name" class="form-label">Product Name</label>
-            <input type="text" name="productname" class="form-control" id="product_name" required>
-        </div>
-
-        <div class="col-md-2">
-            <label for="category" class="form-label">Category</label>
-            <select id="category" name="category" class="form-select" required>
-                <option selected>Food</option>
-                <option>Drinks</option>
-                <option>Clothes</option>
-            </select>
-        </div>
-
-        <div class="col-md-2">
-            <label for="quantity" class="form-label">Quantity</label>
-            <input type="text" name="quantity" class="form-control" id="quantity" required>
-        </div>  
-
-        <div class="input-group mb-3">
-            <span class="input-group-text">₱</span>
-            <div class="col-md-2">
-                <input type="password" id="inputPassword6" class="form-control" aria-describedby="passwordHelpInline">
-            </div>
-            <span class="input-group-text">.00</span>
-        </div>
-
-        <div class="col-md-2">
-            <label for="datepurchase" class="form-label">Date Purchase</label>
-            <input type="date" name="datepurchase" class="form-control" id="datepurchase" required>
-        </div>
-
-        <div class="col-md-2">
-            <label for="stock" class="form-label">Stock</label>
-            <select id="stock" name="stock" class="form-select" required>
-                <option selected>In stock</option>
-                <option>Out stock</option>
-            </select>
-        </div>
-
-        <div class="col-5   ">
-            <button type="submit" class="btn btn-primary float-end" name="addproduct">Add</button>
-        </div>
-
-        <!-- <div class="col-md-4">
-            <input class="form-control" aria-autocomplete="both" aria-labelledby="search-label" id="search-input" 
-            autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="go" spellcheck="false" autofocus="true" 
-            placeholder="Search" maxlength="64" type="search" aria-activedescendant="docsearch-item-0" aria-controls="docsearch-list">
-        </div> -->
-    </form>
-
-    <!-- sample alignment -->
-    <div class="container">
         <div class="row">
             <!-- Row 1 -->
             <div class="col-md-4">
@@ -109,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="quantity" class="form-label">Quantity</label>
                 <input type="text" name="quantity" class="form-control" id="quantity" required>
             </div>
-        </div>
+        </div>  
 
         <div class="row mt-3">
             <!-- Row 2 -->
@@ -133,12 +80,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
         </div>
-    </div> 
 
-    <div class="col-5   ">
-        <button type="submit" class="btn btn-primary float-end" name="addproduct">Add</button>
-    </div>
+        <div class="col-10">
+            <button type="submit" class="btn btn-primary float-end" name="addproduct">ADD</button>
+        </div>
 
+        <div class="col-md-4">
+            <input class="form-control" aria-autocomplete="both" aria-labelledby="search-label" id="search-input" 
+            autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="go" spellcheck="false" autofocus="true" 
+            placeholder="Search" maxlength="64" type="search" aria-activedescendant="docsearch-item-0" aria-controls="docsearch-list">
+        </div>
+    </form>
+
+<!-- sample alignment -->
+    <!-- <div class="container">
+        <div class="row"> -->
+            <!-- Row 1 -->
+            <!-- <div class="col-md-4">
+                <label for="product_name" class="form-label">Product Name</label>
+                <input type="text" name="productname" class="form-control" id="product_name" required>
+            </div>
+            <div class="col-md-4">
+                <label for="category" class="form-label">Category</label>
+                <select id="category" name="category" class="form-select" required>
+                    <option selected>Food</option>
+                    <option>Drinks</option>
+                    <option>Clothes</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="text" name="quantity" class="form-control" id="quantity" required>
+            </div>
+        </div> -->
+
+        <!-- <div class="row mt-3"> -->
+            <!-- Row 2 -->
+            <!-- <div class="col-md-4">
+                <label for="price" class="form-label">Price</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">₱</span>
+                    <input type="price" id="price" class="form-control" aria-describedby="price">
+                    <span class="input-group-text">.00</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="datepurchase" class="form-label">Date Purchase</label>
+                <input type="date" name="datepurchase" class="form-control" id="datepurchase" required>
+            </div>
+            <div class="col-md-4">
+                <label for="stock" class="form-label">Stock</label>
+                <select id="stock" name="stock" class="form-select" required>
+                    <option selected>In stock</option>
+                    <option>Out stock</option>
+                </select>
+            </div>
+        </div>
+    </div> -->
 
     <!-- Add Bootstrap Modal for Editing a Student -->
     <?php if (isset($student)): ?>
