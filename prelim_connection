@@ -1,0 +1,105 @@
+<?php
+
+class Connection {
+    private $server = "mysql:host=localhost;dbname=negro3b";
+    private $dbuser = "root";
+    private $dbpass = "";
+    private $options = array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+    );
+    protected $con;
+
+    public function openConnection() {
+        try {
+            $this->con = new PDO($this->server, $this->dbuser, $this->dbpass, $this->options);
+            return $this->con;
+        } catch (PDOException $err) {
+            echo "Database connection problem: " . $err->getMessage();
+            return null;
+        }
+    }
+
+    public function addProduct() {
+        if (isset($_POST['addproduct'])) {
+
+            $Product_Name = $_POST['productname'];
+            $Category = $_POST['category'];
+            $Quantiy = $_POST['quantity'];
+            $Price = $_POST['price']; 
+            $Date_Purchase = $_POST['datepurchase'];
+            $Stock = $_POST['stock'];
+
+            try {
+                $connection = $this->openConnection();
+                $query = "INSERT INTO product_table (`Product_Name`, `Category`,`Quantity`, `Price`, `Date_Purchase`,
+                `Stock`) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $connection->prepare($query);
+                $stmt->execute([$Product_Name,$Category,$Quantiy,$Price,$Date_Purchase,$Stock]);
+                // $_SESSION['message'] = "Student added successfully"; // Set a success message
+            } catch (PDOException $th) {
+                echo "Error: " . $th->getMessage();
+            }
+        }
+    }
+
+    public function deleteStudent() {
+        if (isset($_POST['delete_student'])) {
+            $id = $_POST['delete_student'];
+            try {
+                $connection = $this->openConnection();
+                $query = "DELETE FROM product_table WHERE id = :id";
+                $stmt = $connection->prepare($query);
+                $query_execute = $stmt->execute(["id" => $id]);
+                if ($query_execute) {
+                    echo'<script>alert("Deleted)</script>';
+                }
+            } catch (PDOException $th) {
+                echo "Error: " . $th->getMessage();
+            }
+        }
+    }
+
+    public function updateStudent() {
+        if (isset($_POST['update_student'])) {
+            $id = $_POST['id'];
+            $first_name = $_POST['firstname'];
+            $last_name = $_POST['lastname'];
+            $email = $_POST['email'];
+            $gender = $_POST['gender'];
+            $birthdate = $_POST['birth'];
+            $address = $_POST['address'];
+    
+            try {
+                $connection = $this->openConnection();
+                $query = "UPDATE product_table SET first_name = ?, last_name = ?, email = ?, gender = ?, 
+                    birthdate = ?, address = ? WHERE id = ?";
+                $stmt = $connection->prepare($query);
+                $stmt->execute([$first_name, $last_name, $email, $gender, $birthdate, $address, $id]);
+    
+                $_SESSION['message'] = "Student updated successfully";
+                header("Location: index.php");
+                exit(0);
+            } catch (PDOException $th) {
+                echo "Error: " . $th->getMessage();
+            }
+        }
+    }
+    
+    
+
+    public function getStudentById($id) {
+        try {
+            $connection = $this->openConnection();
+            $query = "SELECT * FROM student_table WHERE id = ?";
+            $stmt = $connection->prepare($query);
+            $stmt->execute([$id]);
+            return $stmt->fetch(); // Returns a single student object
+        } catch (PDOException $th) {
+            echo "Error: " . $th->getMessage();
+            return null;
+        }
+    }
+    
+    
+}
