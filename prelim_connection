@@ -20,22 +20,20 @@ class Connection {
         }
     }
 
+    //ADD PRODUCT
     public function addProduct() {
         if (isset($_POST['addproduct'])) {
-
             $Product_Name = $_POST['productname'];
             $Category = $_POST['category'];
             $Quantiy = $_POST['quantity'];
-            $Price = $_POST['price']; 
             $Date_Purchase = $_POST['datepurchase'];
-            $Stock = $_POST['stock'];
 
             try {
                 $connection = $this->openConnection();
-                $query = "INSERT INTO product_table (`Product_Name`, `Category`,`Quantity`, `Price`, `Date_Purchase`,
-                `Stock`) VALUES (?, ?, ?, ?, ?, ?)";
+                $query = "INSERT INTO product_table (`Product_Name`,`Category`,`Quantity`,`Date_Purchase`) 
+                VALUES ( ?, ?, ?, ?)";
                 $stmt = $connection->prepare($query);
-                $stmt->execute([$Product_Name,$Category,$Quantiy,$Price,$Date_Purchase,$Stock]);
+                $stmt->execute([$Product_Name,$Category,$Quantiy,$Date_Purchase]);
                 // $_SESSION['message'] = "Student added successfully"; // Set a success message
             } catch (PDOException $th) {
                 echo "Error: " . $th->getMessage();
@@ -43,9 +41,10 @@ class Connection {
         }
     }
 
-    public function deleteStudent() {
-        if (isset($_POST['delete_student'])) {
-            $id = $_POST['delete_student'];
+    //DELETE PRODUCT
+    public function deleteProduct() {
+        if (isset($_POST['delete_product'])) {
+            $id = $_POST['delete_product'];
             try {
                 $connection = $this->openConnection();
                 $query = "DELETE FROM product_table WHERE id = :id";
@@ -53,30 +52,33 @@ class Connection {
                 $query_execute = $stmt->execute(["id" => $id]);
                 if ($query_execute) {
                     echo'<script>alert("Deleted)</script>';
+                } else {
+                    echo '<script>alert("No product found with that ID")</script>';
                 }
             } catch (PDOException $th) {
                 echo "Error: " . $th->getMessage();
             }
         }
     }
+    
+    
+    
 
+    //UPDATE PRODUCT
     public function updateStudent() {
-        if (isset($_POST['update_student'])) {
-            $id = $_POST['id'];
-            $first_name = $_POST['firstname'];
-            $last_name = $_POST['lastname'];
-            $email = $_POST['email'];
-            $gender = $_POST['gender'];
-            $birthdate = $_POST['birth'];
-            $address = $_POST['address'];
+        if (isset($_POST['update_product'])) {
+            $Product_Name = $_POST['productname'];
+            $Category = $_POST['category'];
+            $Quantiy = $_POST['quantity'];
+            $Date_Purchase = $_POST['datepurchase'];
+            $Stock = $_POST['stock'];
     
             try {
                 $connection = $this->openConnection();
-                $query = "UPDATE product_table SET first_name = ?, last_name = ?, email = ?, gender = ?, 
-                    birthdate = ?, address = ? WHERE id = ?";
+                $query = "INSERT INTO product_table (`Product_Name`,`Category`,`Quantity`,`Date_Purchase`,
+                `Stock`) VALUES (?, ?, ?, ?, ?)";
                 $stmt = $connection->prepare($query);
-                $stmt->execute([$first_name, $last_name, $email, $gender, $birthdate, $address, $id]);
-    
+                $stmt->execute([$Product_Name,$Category,$Quantiy,$Date_Purchase,$Stock]);
                 $_SESSION['message'] = "Student updated successfully";
                 header("Location: index.php");
                 exit(0);
@@ -91,7 +93,7 @@ class Connection {
     public function getStudentById($id) {
         try {
             $connection = $this->openConnection();
-            $query = "SELECT * FROM student_table WHERE id = ?";
+            $query = "SELECT * FROM product_table WHERE id = ?";
             $stmt = $connection->prepare($query);
             $stmt->execute([$id]);
             return $stmt->fetch(); // Returns a single student object
