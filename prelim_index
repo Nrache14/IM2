@@ -8,15 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['addproduct'])) {
         $newconnection->addProduct(); 
     } 
-    // elseif (isset($_POST['delete_student'])) {
-    //     $newconnection->deleteStudent(); 
-    // } elseif (isset($_POST['edit_student'])) {
+    elseif (isset($_POST['delete_product'])) {
+        $newconnection->deleteProduct(); 
+    } 
+    // elseif (isset($_POST['edit_student'])) {
     //     $student = $newconnection->getStudentById($_POST['edit_id']); 
     // } elseif (isset($_POST['update_student'])) {
     //     $newconnection->updateStudent(); 
     // }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <body>
 <div class="container">
-    <form class="row g-3" action="" method="POST">
-        <div class="row">
+    <form class="row" action="" method="POST">
+        <div class="row mt-3">
             <!-- Row 1 -->
             <div class="col-md-4">
                 <label for="product_name" class="form-label">Product Name</label>
@@ -61,23 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row mt-3">
             <!-- Row 2 -->
             <div class="col-md-4">
-                <label for="price" class="form-label">Price</label>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">₱</span>
-                    <input type="price" id="price" class="form-control" aria-describedby="price">
-                    <span class="input-group-text">.00</span>
-                </div>
-            </div>
-            <div class="col-md-4">
                 <label for="datepurchase" class="form-label">Date Purchase</label>
                 <input type="date" name="datepurchase" class="form-control" id="datepurchase" required>
-            </div>
-            <div class="col-md-4">
-                <label for="stock" class="form-label">Stock</label>
-                <select id="stock" name="stock" class="form-select" required>
-                    <option selected>In stock</option>
-                    <option>Out stock</option>
-                </select>
             </div>
         </div>
 
@@ -85,108 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="btn btn-primary float-end" name="addproduct">ADD</button>
         </div>
 
-        <div class="col-md-4">
-            <input class="form-control" aria-autocomplete="both" aria-labelledby="search-label" id="search-input" 
-            autocomplete="off" autocorrect="off" autocapitalize="off" enterkeyhint="go" spellcheck="false" autofocus="true" 
-            placeholder="Search" maxlength="64" type="search" aria-activedescendant="docsearch-item-0" aria-controls="docsearch-list">
+        <div class="col-md-4 ms-auto mt-3"> <!-- Added ms-auto to move it to the right -->
+            <input class="form-control" aria-autocomplete="both" id="search-input" 
+            autocomplete="off" placeholder="Search" maxlength="64" type="search">
         </div>
     </form>
-
-<!-- sample alignment -->
-    <!-- <div class="container">
-        <div class="row"> -->
-            <!-- Row 1 -->
-            <!-- <div class="col-md-4">
-                <label for="product_name" class="form-label">Product Name</label>
-                <input type="text" name="productname" class="form-control" id="product_name" required>
-            </div>
-            <div class="col-md-4">
-                <label for="category" class="form-label">Category</label>
-                <select id="category" name="category" class="form-select" required>
-                    <option selected>Food</option>
-                    <option>Drinks</option>
-                    <option>Clothes</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <label for="quantity" class="form-label">Quantity</label>
-                <input type="text" name="quantity" class="form-control" id="quantity" required>
-            </div>
-        </div> -->
-
-        <!-- <div class="row mt-3"> -->
-            <!-- Row 2 -->
-            <!-- <div class="col-md-4">
-                <label for="price" class="form-label">Price</label>
-                <div class="input-group mb-3">
-                    <span class="input-group-text">₱</span>
-                    <input type="price" id="price" class="form-control" aria-describedby="price">
-                    <span class="input-group-text">.00</span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <label for="datepurchase" class="form-label">Date Purchase</label>
-                <input type="date" name="datepurchase" class="form-control" id="datepurchase" required>
-            </div>
-            <div class="col-md-4">
-                <label for="stock" class="form-label">Stock</label>
-                <select id="stock" name="stock" class="form-select" required>
-                    <option selected>In stock</option>
-                    <option>Out stock</option>
-                </select>
-            </div>
-        </div>
-    </div> -->
-
-    <!-- Add Bootstrap Modal for Editing a Student -->
-    <?php if (isset($student)): ?>
-        <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editPRoductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProducttModalLabel">Edit Student</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editStudentForm" action="" method="POST">
-                        <input type="hidden" name="id" value="<?= $student->id; ?>">
-                        <div class="mb-3">
-                            <label for="edit_first_name" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="edit_first_name" name="firstname" value="<?= $student->first_name; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="edit_last_name" name="lastname" value="<?= $student->last_name; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="edit_email" name="email" value="<?= $student->email; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_gender" class="form-label">Gender</label>
-                            <select id="edit_gender" class="form-select" name="gender" required>
-                                <option <?= $student->gender == 'Male' ? 'selected' : ''; ?>>Male</option>
-                                <option <?= $student->gender == 'Female' ? 'selected' : ''; ?>>Female</option>
-                                <option <?= $student->gender == 'Non-binary' ? 'selected' : ''; ?>>Non-binary</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_birthdate" class="form-label">Birthdate</label>
-                            <input type="date" class="form-control" id="edit_birthdate" name="birth" value="<?= $student->birthdate; ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_address" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="edit_address" name="address" value="<?= $student->address; ?>" required>
-                        </div>
-                        <button type="submit" class="btn btn-success" name="update_student">Update</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
-
 
     <?php if (isset($_SESSION['message'])): ?>
         <h5 class="alert alert-success"> <?= $_SESSION['message']; ?> </h5>
@@ -202,9 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th scope="col">Product Name</th>
                     <th scope="col">Category</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Price</th>
                     <th scope="col">Date Purchase</th>
-                    <th scope="col">Stock</th>
                     <th scope="col">    </th>
                 </tr>
             </thead>
@@ -223,17 +109,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <td><?php echo $row->Product_Name; ?></td>
                         <td><?php echo $row->Category; ?></td>
                         <td><?php echo $row->Quantity; ?></td>
-                        <td><?php echo $row->Price; ?></td>
                         <td><?php echo $row->Date_Purchase; ?></td>
-                        <td><?php echo $row->Stock; ?></td> 
                         <td>
-                        <form action="" method="post" class="d-inline">
-                            <input type="hidden" name="edit_id" value="<?= $row->id; ?>">
-                            <button type="submit" class="btn btn-warning" name="edit_student">Edit</button>
-                        </form>
-                        <form action="" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger" value="<?php echo $row->id?>" name="delete_student">Delete</button>
-                        </form>
+                            <form action="" method="post" class="d-inline">
+                                <input type="hidden" name="edit_id" value="<?= $row->id; ?>">
+                                <button type="submit" class="btn btn-warning" name="edit_student">Edit</button>
+                            </form>
+                            <form action="" method="post" class="d-inline">
+                                <input type="hidden" name="delete_product" value="<?php echo $row->id; ?>">
+                                <button type="submit" class="btn btn-danger" name="delete_product">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     <?php
