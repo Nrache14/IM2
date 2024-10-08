@@ -36,6 +36,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
+    <nav class="navbar" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class="navbar-brand" style="font-family: 'Arial', sans-serif; font-weight: bold; font-size: 30px; margin-left: 100px;">ABC Store</a>
+            <form class="d-flex" role="search">
+                <button class="btn btn-outline-success me-5" type="button">Filter</button>
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 400px;">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+
 <div class="container">
     <form class="row" action="" method="POST">
         <div class="row mt-3">
@@ -70,10 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="btn btn-primary float-end" name="addproduct">ADD</button>
         </div>
 
-        <div class="col-md-4 ms-auto mt-3"> <!-- Added ms-auto to move it to the right -->
-            <input class="form-control" aria-autocomplete="both" id="search-input" 
-            autocomplete="off" placeholder="Search" maxlength="64" type="search">
-        </div>
     </form>
 
     <?php if (isset($_SESSION['message'])): ?>
