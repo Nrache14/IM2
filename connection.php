@@ -16,7 +16,6 @@ class Connection {
         }
     }
 
-
     //ADD PRODUCT
     public function addProduct()
     {
@@ -42,7 +41,7 @@ class Connection {
     public function deleteProduct()
     {
         if (isset($_POST['delete_product'])) {
-            $id = $_POST['delete_product'];
+            $id = $_POST['delete_product'];  // This should be the ID of the product to delete.
             try {
                 $connection = $this->openConnection();
                 $query = "DELETE FROM product_table WHERE id = :id";
@@ -60,8 +59,7 @@ class Connection {
     public function updateProduct()
     {
         if (isset($_POST['update_product'])) {
-            // Retrieve the values from the form
-            $id = $_POST['edit_id'];
+            $id = $_POST['product_id'];  // This is the product ID
             $Product_Name = $_POST['productname'];
             $Category = $_POST['category'];
             $Quantity = $_POST['quantity'];
@@ -78,5 +76,40 @@ class Connection {
                 echo "Error: " . $th->getMessage();
             }
         }
+    }
+
+
+    //ADD CAT
+    public function addCategory()
+    {
+        if (isset($_POST['addcategory'])) {
+            $catname = $_POST['catname'];
+
+            try {
+                $connection = $this->openConnection();
+                $query = "INSERT INTO categories (catname) VALUES (?)";
+                $stmnt = $connection->prepare($query);
+                $stmnt->execute([$catname]);
+
+                header("Location: main.php");
+                exit;
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+            }
+        }
+    }
+
+    public function getCategories()
+    {
+        try {
+            $connection = $this->openConnection();
+            $query = "SELECT * FROM categories";
+            $stmnt = $connection->prepare($query);
+            $stmnt->execute();
+            return $stmnt->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+        }
+        return [];
     }
 }
