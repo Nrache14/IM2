@@ -19,6 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['addproduct'])) {
         $newconnection->addProduct();
     } elseif (isset($_POST['delete_product'])) {
+        $newconnection->addCategory();
+    } elseif (isset($_POST['addcategory'])) {
         $newconnection->deleteProduct();
     } elseif (isset($_POST['filter_products'])) {
         // Filter by Category
@@ -29,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Filter by Stock Status
         elseif (!empty($_POST['filter_stock'])) {
             if ($_POST['filter_stock'] === 'in_stock') {
-                $query = "SELECT * FROM product_table WHERE Quantity > 0"; // Products with quantity > 0 are in stock
+                $query = "SELECT * FROM product_table WHERE Quantity > 0";
             } elseif ($_POST['filter_stock'] === 'out_of_stock') {
-                $query = "SELECT * FROM product_table WHERE Quantity = 0"; // Products with quantity = 0 are out of stock
+                $query = "SELECT * FROM product_table WHERE Quantity = 0"; 
             }
         }
         // Filter by Date Range
@@ -90,10 +92,12 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
         </div>
     </nav>
 
+
     <div class="container mt-4">
         <h2>Welcome, <?= $_SESSION['name']; ?></h2>
 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
+        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
 
         <?php if (isset($_SESSION['message'])): ?>
             <h5 class="alert alert-success"> <?= $_SESSION['message']; ?> </h5>
@@ -113,19 +117,21 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
             </thead>
             <tbody>
                 <?php foreach ($result as $row): ?>
-                    <tr data-id="<?= $row->Product_Id; ?>">
-                        <td><?= $row->Product_Id; ?></td>
+                    <tr data-id="<?= $row->id; ?>">
+                        <td><?= $row->id; ?></td>
                         <td><?= $row->Product_Name; ?></td>
                         <td><?= $row->Category; ?></td>
                         <td><?= $row->Quantity; ?></td>
                         <td><?= $row->Date_Purchase; ?></td>
                         <td>
                             <form action="" method="POST" class="d-inline">
-                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal" onclick="populateEditModal(<?= $row->Product_Id; ?>)">Edit</button>
-                                <input type="hidden" name="delete_id" value="<?= $row->Product_Id; ?>">
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal" onclick="populateEditModal(<?= $row->id; ?>)">Edit</button>
+
+                                <input type="hidden" name="delete_product" value="<?= $row->id; ?>">  <!-- Correct name for delete -->
                                 <button type="submit" name="delete_product" class="btn btn-danger btn-sm">Delete</button>
                             </form>
                         </td>
+
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -137,20 +143,22 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Function to populate edit modal with existing product details
+    // Function to populate edit modal with existing product details
         function populateEditModal(productId) {
-            const row = document.querySelector(`tr[data-id='${productId}']`);
-            const productName = row.querySelector("td:nth-child(2)").textContent;
-            const category = row.querySelector("td:nth-child(3)").textContent;
-            const quantity = row.querySelector("td:nth-child(4)").textContent;
-            const datePurchase = row.querySelector("td:nth-child(5)").textContent;
+        const row = document.querySelector(`tr[data-id='${productId}']`);  // Corrected query selector
+        const productName = row.querySelector("td:nth-child(2)").textContent;
+        const category = row.querySelector("td:nth-child(3)").textContent;
+        const quantity = row.querySelector("td:nth-child(4)").textContent;
+        const datePurchase = row.querySelector("td:nth-child(5)").textContent;
 
-            document.getElementById("edit_product_id").value = productId;
-            document.getElementById("edit_product_name").value = productName;
-            document.getElementById("edit_category").value = category;
-            document.getElementById("edit_quantity").value = quantity;
-            document.getElementById("edit_date_purchase").value = datePurchase;
-        }
-    </script>
+        // Set the values in the modal
+        document.getElementById("edit_id").value = productId;
+        document.getElementById("edit_product_name").value = productName;
+        document.getElementById("edit_category").value = category;
+        document.getElementById("edit_quantity").value = quantity;
+        document.getElementById("edit_date_purchase").value = datePurchase;
+    }
+</script>
+
 </body>
 </html>
