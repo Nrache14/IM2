@@ -41,42 +41,27 @@ if (isset($_SESSION['name'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Button to trigger the login modal -->
     <div class="d-flex justify-content-center mt-5">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
-    </div>
-
-    <!-- Login Modal -->
-    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="col-md-6 form-container">
+            <h3>Login</h3>
+            <!-- Show login error message if it exists -->
+            <?php if (isset($login_error)) { echo "<p class='text-danger'>$login_error</p>"; } ?>
+            <form action="login.php" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" name="username" id="username" class="form-control" required>
                 </div>
-                <div class="modal-body">
-                    <!-- Show login error message if it exists -->
-                    <?php if (isset($login_error)) { echo "<p class='text-danger'>$login_error</p>"; } ?>
-                    <form action="login.php" method="post">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username:</label>
-                            <input type="text" name="username" id="username" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password:</label>
-                            <input type="password" name="password" id="password" class="form-control" required>
-                        </div>
-                        <button type="submit" name="login_submit" class="btn btn-primary">Login</button>
-                    </form>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
                 </div>
-                <div class="modal-footer">
-                    <p>Don't have an account? <a href="register.php">Register here</a></p>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
+                <button type="submit" name="login_submit" class="custom-btn">Login</button>
+            </form>
+            <p class="mt-3">Don't have an account? <a href="register.php" class="custom-link">Register here</a></p>
         </div>
     </div>
 
+    <?php include 'style.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
