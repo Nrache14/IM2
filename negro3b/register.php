@@ -1,3 +1,36 @@
+<?php
+
+session_start();
+require_once('connection.php');
+
+if (isset($_POST['register_submit'])) {
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $address = $_POST['address'];
+    $birthdate = $_POST['birthdate'];
+    $gender = $_POST['gender'];
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $role = 'customer'; // Default role is customer
+
+    try {
+        $connection = new Connection();
+        $pdo = $connection->openConnection();
+        $query = "INSERT INTO users (first_name, last_name, address, birthdate, gender, username, password, role) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$first_name, $last_name, $address, $birthdate, $gender, $username, $password, $role]);
+
+        $_SESSION['message'] = "Registration successful! You can now login.";
+        header("Location: login.php");
+        exit();
+    } catch (PDOException $e) {
+        $register_error = "Error: " . $e->getMessage();
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

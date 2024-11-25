@@ -87,7 +87,7 @@ class Connection {
     public function addCategory()
     {
         if (isset($_POST['addcategory'])) {
-            $catname = $_POST['catname'];
+            $catname = $_POST['catname']; // Category name input from form
 
             try {
                 $connection = $this->openConnection();
@@ -105,17 +105,18 @@ class Connection {
     }
 
 
-    public function getCategories()
-    {
-        try {
-            $connection = $this->openConnection();
-            $query = "SELECT * FROM categories";
-            $stmnt = $connection->prepare($query);
-            $stmnt->execute();
-            return $stmnt->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
-        }
-        return [];
-    }
+
+    // public function getCategories()
+    // {
+    //     try {
+    //         $connection = $this->openConnection();
+    //         $query = "SELECT * FROM categories";
+    //         $stmnt = $connection->prepare($query);
+    //         $stmnt->execute();
+    //         return $stmnt->fetchAll();
+    //     } catch (PDOException $e) {
+    //         echo "Error: " . $e->getMessage();
+    //     }
+    //     return [];
+    // }
 }

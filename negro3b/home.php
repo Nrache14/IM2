@@ -2,18 +2,27 @@
 session_start();
 require_once('connection.php');
 
-// Redirect to login if not logged in
-if (!isset($_SESSION['name'])) {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit();
 }
 
 $newconnection = new Connection();
 $pdo = $newconnection->openConnection();
-// $newConnection->addCategory();
-// $products = [];
-// $users = [];
-// $categories = $newConnection->getCategories();
+
+// Fetch categories dynamically
+$categoryQuery = "SELECT * FROM categories";
+$categoryStmt = $pdo->prepare($categoryQuery);
+$categoryStmt->execute();
+$categories = $categoryStmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
+
+$Orderquery = "SELECT orders.order_id, orders.user_id, users.username, orders.product_id, product_table.prod_name, orders.quantity, orders.order_date
+    FROM orders orders
+    JOIN users users ON orders.user_id = users  .user_id
+    JOIN product_table product_table ON orders.product_id = product_table.Product_Id ORDER BY orders.order_date DESC";
+$Orderstmt = $pdo->prepare($Orderquery);
+$Orderstmt->execute();
+$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $query = "SELECT * FROM product_table";
 $params = [];
@@ -50,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // **Insert the update_product handling logic here**
     if (isset($_POST['update_product'])) {
         $newconnection->updateProduct();
     }
@@ -89,7 +97,7 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
     </nav>
 
     <div class="container mt-4">
-        <h2 style="color: white;">Welcome, <?= $_SESSION['name']; ?></h2>
+        <!-- <h2 style="color: white;">Welcome, <?= $_SESSION['first_name']; ?></h2> -->
 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
         <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
@@ -135,6 +143,41 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
             </tbody>
         </table>
     </div>
+
+    <div class="container mt-4">
+    <h2 class="text-center">Order Management</h2>
+
+    <?php if (!empty($orders)): ?>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Order Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($orders as $order): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($order['order_id']); ?></td>
+                            <td><?= htmlspecialchars($order['user_id']); ?></td>
+                            <td><?= htmlspecialchars($order['username']); ?></td>
+                            <td><?= htmlspecialchars($order['prod_name']); ?></td>
+                            <td><?= htmlspecialchars($order['quantity']); ?></td>
+                            <td><?= htmlspecialchars($order['order_date']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php else: ?>
+        <p class="text-center">No orders have been placed yet.</p>
+    <?php endif; ?>
+</div>
 
     <?php include 'modal.php'; ?>
     <?php include 'style.php'; ?>
