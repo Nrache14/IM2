@@ -20,22 +20,26 @@ class Connection {
     public function addProduct()
     {
         if (isset($_POST['addproduct'])) {
-            $Product_Name = $_POST['productname'];
-            $Category = $_POST['category'];
-            $Quantiy = $_POST['quantity'];
-            $Date_Purchase = $_POST['datepurchase'];
+            $product_name = $_POST['product_name'];
+            $category_id = $_POST['category_id']; // Category is selected from a dropdown
+            $quantity = $_POST['quantity'];
+            $date_purchase = $_POST['date_purchase'];
 
             try {
                 $connection = $this->openConnection();
-                $query = "INSERT INTO product_table (`Product_Name`,`Category`,`Quantity`,`Date_Purchase`) 
-                VALUES ( ?, ?, ?, ?)";
-                $stmt = $connection->prepare($query);
-                $stmt->execute([$Product_Name, $Category, $Quantiy, $Date_Purchase]);
-            } catch (PDOException $th) {
-                echo "Error: " . $th->getMessage();
+                $query = "INSERT INTO product_table (Product_Name, Category, Quantity, Date_Purchase) VALUES (?, ?, ?, ?)";
+                $stmnt = $connection->prepare($query);
+                $stmnt->execute([$product_name, $category_id, $quantity, $date_purchase]);
+
+                $_SESSION['message'] = "Product added successfully!";
+                header("Location: home.php");
+                exit;
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
             }
         }
     }
+
 
     // DELETE PRODUCT
     public function deleteProduct()
@@ -79,19 +83,35 @@ class Connection {
     }
 
 
-    //ADD CAT
+    //ADD CATEGORIES
     public function addCategory()
     {
         if (isset($_POST['addcategory'])) {
-            $catname = $_POST['catname'];
+            $catname = $_POST['catname']; // Category name input from form
 
             try {
                 $connection = $this->openConnection();
-                $query = "INSERT INTO categories (catname) VALUES (?)";
-                $stmnt = $connection->prepare($query);
-                $stmnt->execute([$catname]);
 
-                header("Location: main.php");
+                // Check if category already exists
+                $checkQuery = "SELECT COUNT(*) FROM categories WHERE catname = :catname";
+                $stmt = $connection->prepare($checkQuery);
+                $stmt->execute([':catname' => $catname]);
+                $categoryExists = $stmt->fetchColumn();
+
+                if ($categoryExists > 0) {
+                    // Category already exists
+                    $_SESSION['message'] = "Category already exists!";
+                    header("Location: home.php");
+                    exit;
+                }
+
+                // Insert new category if it doesn't exist
+                $query = "INSERT INTO categories (catname) VALUES (:catname)";
+                $stmnt = $connection->prepare($query);
+                $stmnt->execute([':catname' => $catname]);
+
+                $_SESSION['message'] = "Category added successfully!";
+                header("Location: home.php");
                 exit;
             } catch (PDOException $e) {
                 echo "Error: " . $e->getMessage();
@@ -99,17 +119,6 @@ class Connection {
         }
     }
 
-    public function getCategories()
-    {
-        try {
-            $connection = $this->openConnection();
-            $query = "SELECT * FROM categories";
-            $stmnt = $connection->prepare($query);
-            $stmnt->execute();
-            return $stmnt->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
-        }
-        return [];
-    }
+
+    
 }

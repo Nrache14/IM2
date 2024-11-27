@@ -2,8 +2,7 @@
 session_start();
 require_once('connection.php');
 
-// Redirect to login if not logged in
-if (!isset($_SESSION['name'])) {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit();
 }
@@ -11,10 +10,29 @@ if (!isset($_SESSION['name'])) {
 $newconnection = new Connection();
 $pdo = $newconnection->openConnection();
 
+// Fetch categories dynamically
+$categoryQuery = "SELECT * FROM categories";
+$categoryStmt = $pdo->prepare($categoryQuery);
+$categoryStmt->execute();
+$categories = $categoryStmt->fetchAll(PDO::FETCH_OBJ); 
+
+$userQuery = "SELECT * FROM users WHERE role = 'customer'";
+$userStmt = $pdo->prepare($userQuery);
+$userStmt->execute();
+$users = $userStmt->fetchAll(PDO::FETCH_OBJ);
+
+$Orderquery = "SELECT orders.order_id, users.first_name AS customer_name, product_table.Product_Name AS prod_name, orders.quantity 
+               FROM orders 
+               JOIN users ON orders.user_id = users.id 
+               JOIN product_table ON orders.product_id = product_table.id 
+               ORDER BY orders.order_date DESC";
+$Orderstmt = $pdo->prepare($Orderquery);
+$Orderstmt->execute();
+$orders = $Orderstmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
+
 $query = "SELECT * FROM product_table";
 $params = [];
 
-// Handle product operations
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['addproduct'])) {
         $newconnection->addProduct();
@@ -47,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // **Insert the update_product handling logic here**
     if (isset($_POST['update_product'])) {
         $newconnection->updateProduct();
     }
@@ -56,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
+
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +99,6 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
     </nav>
 
     <div class="container mt-4">
-        <h2 style="color: white;">Welcome, <?= $_SESSION['name']; ?></h2>
 
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
         <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
@@ -92,7 +109,7 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
             <?php unset($_SESSION['message']); ?>
         <?php endif; ?>
 
-
+        <!-- PRODUCTS TABLE -->
         <table class="table table-hover table-bordered table-striped mt-3">
             <thead>
                 <tr>
@@ -127,6 +144,72 @@ $result = $stmt->fetchAll(PDO::FETCH_OBJ); // Fetch as objects
             </tbody>
         </table>
     </div>
+
+    <div class="mt-4 text-center">
+            <h2>USERS</h2>
+        </div>
+
+        <!-- USERS TABLE -->
+        <div class="table-responsive mt-4">
+            <table class="table table-hover">
+                <thead>
+                    <tr class="text-center">
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Address</th>
+                        <th>Birthdate</th>
+                        <th>Gender</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Date Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($users as $user): ?>
+                        <tr class="text-center">
+                            <td><?php echo $user->first_name; ?></td>
+                            <td><?php echo $user->last_name; ?></td>
+                            <td><?php echo $user->address; ?></td>
+                            <td><?php echo $user->birthdate; ?></td>
+                            <td><?php echo $user->gender; ?></td>
+                            <td><?php echo $user->username; ?></td>
+                            <td><?php echo $user->role; ?></td>
+                            <td><?php echo $user->date_created; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <br>
+        <hr class="my-4">
+
+        <div class="mt-4 text-center">
+            <h2>ORDERS</h2>
+        </div>
+
+        <!-- ORDERS TABLE -->
+        <div class="table-responsive mt-4 text-center">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($orders as $order): ?>
+                        <tr>
+                            <td><?php echo $order->customer_name; ?></td>
+                            <td><?php echo $order->prod_name; ?></td>
+                            <td><?php echo $order->quantity; ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
 
     <?php include 'modal.php'; ?>
     <?php include 'style.php'; ?>

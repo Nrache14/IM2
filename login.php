@@ -5,32 +5,60 @@ require_once('connection.php');
 $newconnection = new Connection();
 $pdo = $newconnection->openConnection();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_submit'])) {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+if (isset($_POST['login_submit'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    $users = $pdo->prepare("SELECT * FROM users WHERE username = :username");
-    $users->execute(['username' => $username]);
-    $result = $users->fetch(PDO::FETCH_ASSOC);  // Fetch as associative array
+    try {
+        $query = "SELECT * FROM users WHERE username = ?";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$username]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result) {
-        if (password_verify($password, $result['password'])) {
-            $_SESSION['name'] = $result['first_name']; 
-            header('Location: home.php'); 
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'];
+
+            // Restore cart items from the database for customers
+            if ($user['role'] === 'customer') {
+                $cartQuery = $pdo->prepare("SELECT cart.product_id, cart.quantity, product_table.Product_Name, product_table.Category 
+                                            FROM cart 
+                                            JOIN product_table ON cart.product_id = product_table.id 
+                                            WHERE cart.user_id = ?");
+                $cartQuery->execute([$user['id']]);
+                $cartItems = $cartQuery->fetchAll(PDO::FETCH_ASSOC);
+
+                $_SESSION['cart'] = [];
+                foreach ($cartItems as $item) {
+                    $_SESSION['cart'][$item['product_id']] = [
+                        'name' => $item['Product_Name'],
+                        'quantity' => $item['quantity'],
+                        'category' => $item['Category']
+                    ];
+                }
+            }
+            
+            // Role-based redirection
+            if ($user['role'] === 'admin') {
+                header("Location: home.php"); // Redirect admin
+            } else if ($user['role'] === 'customer') {
+                header("Location: products.php"); // Redirect customer
+            } else {
+                $login_error = "User role is not recognized.";
+            }
             exit();
         } else {
-            $login_error = "Invalid username or password!";
+            $login_error = "Invalid username or password.";
         }
-    } else {
-        $login_error = "Invalid username or password!";
+
+    } catch (PDOException $e) {
+        $login_error = "Error: " . $e->getMessage();
     }
 }
-
-if (isset($_SESSION['name'])) {
-    header('Location: home.php');
-    exit();
-}
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
