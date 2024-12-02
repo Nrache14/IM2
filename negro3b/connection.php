@@ -1,12 +1,15 @@
 <?php
+$newConnection = new Connection();
 
-class Connection {
+class Connection
+{
     private $host = 'localhost';
-    private $db = 'negro3b'; 
+    private $db = 'negro3b';
     private $user = 'root';
-    private $pass = ''; 
+    private $pass = '';
 
-    public function openConnection() {
+    public function openConnection()
+    {
         try {
             $pdo = new PDO("mysql:host=$this->host;dbname=$this->db", $this->user, $this->pass);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -45,7 +48,7 @@ class Connection {
     public function deleteProduct()
     {
         if (isset($_POST['delete_product'])) {
-            $id = $_POST['delete_product'];  
+            $id = $_POST['delete_product'];
             try {
                 $connection = $this->openConnection();
                 $query = "DELETE FROM product_table WHERE id = :id";
@@ -121,7 +124,8 @@ class Connection {
 
 
     // Function to remove product from the cart
-    public function removeFromCart($user_id, $product_id) {
+    public function removeFromCart($user_id, $product_id)
+    {
         try {
             $connection = $this->openConnection();
             $removeFromDb = $connection->prepare("DELETE FROM cart WHERE user_id = :user_id AND product_id = :product_id");
@@ -133,38 +137,48 @@ class Connection {
     }
 
     // Function to insert order and update stock during checkout
-public function processCheckout($user_id, $cart) {
-    try {
-        $connection = $this->openConnection();
-        $connection->beginTransaction();
+    public function processCheckout($user_id, $cart)
+    {
+        try {
+            $connection = $this->openConnection();
+            $connection->beginTransaction(); // Start transaction
 
-        foreach ($cart as $product_id => $cartItem) {
-            $quantity = $cartItem['quantity'];
+            foreach ($cart as $product_id => $cartItem) {
+                $quantity = $cartItem['quantity'];
 
-            $stmt = $connection->prepare("INSERT INTO orders (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
-            $stmt->execute([':user_id' => $user_id, ':product_id' => $product_id, ':quantity' => $quantity]);
+                // Step 1: Insert into the orders table
+                $stmt = $connection->prepare("INSERT INTO orders (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
+                $stmt->execute([
+                    ':user_id' => $user_id,
+                    ':product_id' => $product_id,
+                    ':quantity' => $quantity
+                ]);
 
-            $updateStock = $connection->prepare("UPDATE product_table SET Quantity = Quantity - :quantity WHERE id = :product_id");
-            $updateStock->execute([':quantity' => $quantity, ':product_id' => $product_id]);
+                // Step 2: Update the product stock
+                $updateStock = $connection->prepare("UPDATE product_table SET Quantity = Quantity - :quantity WHERE id = :product_id AND Quantity >= :quantity");
+                $updateStock->execute([
+                    ':quantity' => $quantity,
+                    ':product_id' => $product_id
+                ]);
 
-            $removeFromDb = $connection->prepare("DELETE FROM cart WHERE user_id = :user_id AND product_id = :product_id");
-            $removeFromDb->execute([':user_id' => $user_id, ':product_id' => $product_id]);
+                if ($updateStock->rowCount() === 0) {
+                    $connection->rollBack(); // Rollback transaction
+                    return "Insufficient stock for product ID: $product_id";
+                }
 
-            if ($removeFromDb->rowCount() > 0) {
-                echo "Item removed from the cart table for product ID: $product_id <br>";
-            } else {
-                echo "Error removing item from the cart table for product ID: $product_id <br>";
+                // Step 3: Remove item from the cart table
+                $removeFromDb = $connection->prepare("DELETE FROM cart WHERE user_id = :user_id AND product_id = :product_id");
+                $removeFromDb->execute([
+                    ':user_id' => $user_id,
+                    ':product_id' => $product_id
+                ]);
             }
+
+            $connection->commit(); // Commit transaction
+            return true;
+        } catch (PDOException $e) {
+            $connection->rollBack(); // Rollback on error
+            return "Error during checkout: " . $e->getMessage();
         }
-
-        $connection->commit();
-        return true;
-    } catch (PDOException $e) {
-        $connection->rollBack();
-        return "Error during checkout: " . $e->getMessage();
     }
-}
-
-
-    
 }
