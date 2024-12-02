@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 28, 2024 at 01:22 PM
+-- Generation Time: Dec 02, 2024 at 08:09 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,10 +39,7 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`id`, `user_id`, `product_id`, `quantity`) VALUES
-(24, 8, 10, 5),
-(25, 8, 13, 5),
-(26, 8, 11, 5),
-(29, 8, 12, 3);
+(41, 8, 11, 5);
 
 -- --------------------------------------------------------
 
@@ -73,10 +70,21 @@ INSERT INTO `categories` (`id`, `catname`) VALUES
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `product_id` int(11) DEFAULT NULL,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
   `quantity` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `user_id`, `product_id`, `quantity`) VALUES
+(159, 8, 10, 10),
+(160, 8, 11, 15),
+(161, 8, 12, 5),
+(162, 8, 13, 5),
+(163, 8, 10, 5);
 
 -- --------------------------------------------------------
 
@@ -97,10 +105,10 @@ CREATE TABLE `product_table` (
 --
 
 INSERT INTO `product_table` (`id`, `Product_Name`, `Category`, `Quantity`, `Date_Purchase`) VALUES
-(10, 'eggplant', 1, 40, '2024-10-01'),
-(11, 'nike', 2, 50, '2024-11-01'),
-(12, 'coke', 3, 18, '2024-09-01'),
-(13, 'goya', 4, 20, '2024-11-01');
+(10, 'eggplant', 1, 5, '2024-10-01'),
+(11, 'nike', 2, 20, '2024-11-01'),
+(12, 'coke', 3, 20, '2024-09-01'),
+(13, 'goya', 4, 10, '2024-11-01');
 
 -- --------------------------------------------------------
 
@@ -151,9 +159,7 @@ ALTER TABLE `categories`
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
-  ADD PRIMARY KEY (`order_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`),
-  ADD UNIQUE KEY `product_id` (`product_id`);
+  ADD PRIMARY KEY (`order_id`);
 
 --
 -- Indexes for table `product_table`
@@ -176,7 +182,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -188,7 +194,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
 
 --
 -- AUTO_INCREMENT for table `product_table`
