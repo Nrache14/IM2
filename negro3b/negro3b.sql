@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2024 at 08:09 AM
+-- Generation Time: Jan 15, 2025 at 08:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,7 +39,8 @@ CREATE TABLE `cart` (
 --
 
 INSERT INTO `cart` (`id`, `user_id`, `product_id`, `quantity`) VALUES
-(41, 8, 11, 5);
+(41, 8, 11, 5),
+(42, 8, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -57,10 +58,9 @@ CREATE TABLE `categories` (
 --
 
 INSERT INTO `categories` (`id`, `catname`) VALUES
-(1, 'veggies'),
-(2, 'shoes'),
-(3, 'drinks'),
-(4, 'choco');
+(5, 'fantasy'),
+(6, 'mystery'),
+(7, 'horror');
 
 -- --------------------------------------------------------
 
@@ -105,10 +105,22 @@ CREATE TABLE `product_table` (
 --
 
 INSERT INTO `product_table` (`id`, `Product_Name`, `Category`, `Quantity`, `Date_Purchase`) VALUES
-(10, 'eggplant', 1, 5, '2024-10-01'),
-(11, 'nike', 2, 20, '2024-11-01'),
-(12, 'coke', 3, 20, '2024-09-01'),
-(13, 'goya', 4, 10, '2024-11-01');
+(14, 'Book1', 5, 20, '2025-01-15'),
+(15, 'Book2', 6, 15, '2025-01-15'),
+(16, 'Book3', 7, 25, '2025-01-15');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sales`
+--
+
+CREATE TABLE `sales` (
+  `id` int(11) NOT NULL,
+  `book_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `sale_date` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -136,6 +148,19 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `address`, `birthdate`, `gender`, `username`, `password`, `role`, `date_created`) VALUES
 (7, 'admin', 'admin', 'manila', '2018-06-14', 'Male', 'admin', '$2y$10$db05JfdODtUGtetzLpo.p.AKU0vjXc5RfRav6bEAmP633ITYGCWY6', 'admin', '0000-00-00'),
 (8, 'customer', 'customer', 'cebu', '2018-06-20', 'Female', 'customer', '$2y$10$BkOdPRzQ5HMNu.q9/hKX.uBd/PBxb/3cMIRl4yM4Qjjf8RZ3MWRq.', 'customer', '0000-00-00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_messages`
+--
+
+CREATE TABLE `user_messages` (
+  `id` int(11) NOT NULL,
+  `user_name` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
@@ -169,9 +194,22 @@ ALTER TABLE `product_table`
   ADD UNIQUE KEY `Category` (`Category`);
 
 --
+-- Indexes for table `sales`
+--
+ALTER TABLE `sales`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `book_id` (`book_id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user_messages`
+--
+ALTER TABLE `user_messages`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -182,13 +220,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -200,13 +238,35 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `product_table`
 --
 ALTER TABLE `product_table`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT for table `sales`
+--
+ALTER TABLE `sales`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `user_messages`
+--
+ALTER TABLE `user_messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `sales`
+--
+ALTER TABLE `sales`
+  ADD CONSTRAINT `sales_ibfk_1` FOREIGN KEY (`book_id`) REFERENCES `product_table` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
