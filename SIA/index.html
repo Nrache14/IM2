@@ -20,7 +20,7 @@
         </div>
     </nav>
 
-    <!-- Modal for Add User -->
+        <!-- Modal for Add User -->
     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -30,41 +30,43 @@
                 </div>
                 <div class="modal-body"> 
                     <form id="addUserForm"> 
-                        <div class="mb-3"> 
-                            <label for="InputFname" class="form-label">First Name</label> 
-                            <input type="text" class="form-control" id="InputFname" required> 
-                        </div> 
-                        <div class="mb-3">
-                            <label for="InputLname" class="form-label">Last Name</label> 
-                            <input type="text" class="form-control" id="InputLname" required> 
+                        <div class="row">
+                            <div class="col-md-6 mb-3"> 
+                                <label for="InputFname" class="form-label">First Name</label> 
+                                <input type="text" class="form-control" id="InputFname" required> 
+                            </div> 
+                            <div class="col-md-6 mb-3">
+                                <label for="InputLname" class="form-label">Last Name</label> 
+                                <input type="text" class="form-control" id="InputLname" required> 
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="InputEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="InputEmail" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="InputGender" class="form-label">Gender</label>
+                                <input type="text" class="form-control" id="InputGender" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="InputCourse" class="form-label">Course</label>
+                                <input type="text" class="form-control" id="InputCourse" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="InputAddress" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="InputAddress" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="InputBirthdate" class="form-label">Birthdate</label>
+                                <input type="date" class="form-control" id="InputBirthdate" required>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="InputEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="InputEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="InputGender" class="form-label">Gender</label>
-                            <input type="text" class="form-control" id="InputGender" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="InputCourse" class="form-label">Course</label>
-                            <input type="text" class="form-control" id="InputCourse" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="InputAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="InputAddress" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="InputBirthdate" class="form-label">Birthdate</label>
-                            <input type="date" class="form-control" id="InputBirthdate" required>
-                        </div>
-                        <button type="submit" class="btn btn-dark">Add</button>
+                        <button type="submit" class="btn btn-dark w-100">Add</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <!-- Modal for Editing User -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -76,41 +78,42 @@
                 <div class="modal-body">
                     <form id="editUserForm">
                         <input type="hidden" id="editId">
-                        <div class="mb-3">
-                            <label for="editFname" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="editFname" required>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="editFname" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="editFname" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editLname" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="editLname" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="editEmail" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editGender" class="form-label">Gender</label>
+                                <input type="text" class="form-control" id="editGender" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editCourse" class="form-label">Course</label>
+                                <input type="text" class="form-control" id="editCourse" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editAddress" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="editAddress" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="editBirthdate" class="form-label">Birthdate</label>
+                                <input type="date" class="form-control" id="editBirthdate" required>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="editLname" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="editLname" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="editEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editGender" class="form-label">Gender</label>
-                            <input type="text" class="form-control" id="editGender" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCourse" class="form-label">Course</label>
-                            <input type="text" class="form-control" id="editCourse" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editAddress" class="form-label">Address</label>
-                            <input type="text" class="form-control" id="editAddress" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editBirthdate" class="form-label">Birthdate</label>
-                            <input type="date" class="form-control" id="editBirthdate" required>
-                        </div>
-                        <button type="submit" class="btn btn-dark">Update</button>
+                        <button type="submit" class="btn btn-dark w-100">Update</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
 
     <!-- Table -->
     <div class="container mt-4">
